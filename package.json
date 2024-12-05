@@ -1,0 +1,25 @@
+{
+  "name": "discord-playlist-bot",
+  "version": "1.0.0",
+  "description": "A discord bot that creates playlists on multiple music platform with music posted into a discord text channel.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JacobA2000/Discord-Playlist-Bot.git"
+  },
+  "author": "Hypezz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JacobA2000/Discord-Playlist-Bot/issues"
+  },
+  "homepage": "https://github.com/JacobA2000/Discord-Playlist-Bot#readme",
+  "dependencies": {
+    "discord.js": "^14.16.3"
+  },
+  "devDependencies": {
+    "eslint": "^9.16.0"
+  }
+}
