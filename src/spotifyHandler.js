@@ -53,8 +53,6 @@ app.get('/spotifycallback', async (req, res) => {
     // Schedule the token refresh before the access token expires 
     scheduleTokenRefresh();
 
-    addTrackToPlaylist();
-
   } catch (error) {
     res.send(`Error: ${error.message}`);
   }
@@ -94,8 +92,7 @@ async function fetchNewAccessToken() {
   }
 }
 
-async function addTrackToPlaylist() {
-    const track_uri = "spotify:track:0DI3WNmIyfi2GZLQwhYDQC"; 
+async function addTrackToPlaylist(track_uri) { 
     const url = `https://api.spotify.com/v1/playlists/${spotifyPlaylistId}/tracks`; 
     const bodyData = JSON.stringify({ 
         uris: [track_uri], 
@@ -123,3 +120,5 @@ async function addTrackToPlaylist() {
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+
+module.exports.addTrackToPlaylist = addTrackToPlaylist;

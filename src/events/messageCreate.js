@@ -1,7 +1,9 @@
 const { Events } = require('discord.js');
 const { clientId } = require('../config.json');
+const spotify = require("../spotifyHandler")
 
-const urlRegex = /\b((http|https):\/\/)?(www\.)?(open\.spotify\.com\/track\/[a-zA-Z0-9]+(\?[a-zA-Z0-9=&]*)?|music\.youtube\.com\/watch\?v=[a-zA-Z0-9_-]+(\&[a-zA-Z0-9=&]*)?|tidal\.com\/browse\/track\/[a-zA-Z0-9]+(\?[a-zA-Z0-9=&]*)?)\b/g;
+//const urlRegex = /\b((http|https):\/\/)?(www\.)?(open\.spotify\.com\/track\/[a-zA-Z0-9]+(\?[a-zA-Z0-9=&]*)?|music\.youtube\.com\/watch\?v=[a-zA-Z0-9_-]+(\&[a-zA-Z0-9=&]*)?|tidal\.com\/browse\/track\/[a-zA-Z0-9]+(\?[a-zA-Z0-9=&]*)?)\b/g;
+const urlRegex = /\b((http|https):\/\/)?(www\.)?(open\.spotify\.com\/track\/[a-zA-Z0-9]+(\?[a-zA-Z0-9=&]*)?|music\.youtube\.com\/watch\?v=[a-zA-Z0-9_-]+(\&[a-zA-Z0-9=&]*)?)\b/g;
 
 module.exports = {
 	name: Events.MessageCreate,
@@ -19,9 +21,18 @@ module.exports = {
         if (urlsMatched == null) { return; };
 
         console.log(`Found potential music urls: ${urlsMatched}`);
+        
+        //ADD SONGS TO PLAYLIST
+        urlsMatched.forEach(url => {
+                if(url.includes("spotify")) {
+                        const urlParts = url.split('/');
+                        track_uri = `spotify:track:${urlParts[urlParts.length - 1]}`;
+                        spotify.addTrackToPlaylist(track_uri);
 
-        //ADD SONG TO PLAYLIST
-
+                        //IMPLEMENT HANDLING FOR YT
+                }
+        });
+        
         await message.channel.send("Test");
 	},
 };
