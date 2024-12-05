@@ -20,6 +20,8 @@ module.exports = {
 
         console.log(`Found potential music urls: ${urlsMatched}`);
 
+        //ADD SONG TO PLAYLIST
+
         await message.channel.send("Test");
 	},
 };
