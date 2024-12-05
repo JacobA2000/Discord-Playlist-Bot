@@ -33,7 +33,7 @@ const rest = new REST().setToken(token);
 
         let data;
 
-        if (process.argv[2] == "global"){
+        if (process.argv[2].toLowerCase() == "global"){
             
             console.log(`Started globally refreshing ${commands.length} application (/) commands.`);
 
