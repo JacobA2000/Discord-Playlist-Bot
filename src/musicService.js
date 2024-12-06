@@ -270,7 +270,7 @@ async function addVideoToYTPlaylist(video_id) {
 }
 
 async function searchYTByISRC(ISRC) {
-  const url = `https://youtube.googleapis.com/youtube/v3/search?part=snippet`;
+  const baseUrl = `https://www.googleapis.com/youtube/v3/search`;
   const body = {
     snippet: {
       q: ISRC,
@@ -279,13 +279,14 @@ async function searchYTByISRC(ISRC) {
     }
   };
 
+  const params = new URLSearchParams({ part: 'snippet', q: ISRC, topicId: '/m/04rlf', type: 'video', maxResults: 5 });
+  const url = `${baseUrl}?${params.toString()}`
+
   const response = await fetch(url, {
-    method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': `Bearer ${ytAccessToken}`
-    },
-    body: JSON.stringify(body)
+    }
   });
 
   if (!response.ok) {
