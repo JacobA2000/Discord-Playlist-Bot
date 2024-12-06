@@ -1,7 +1,7 @@
 {
   "name": "discord-playlist-bot",
   "version": "1.0.0",
-  "description": "A discord bot that creates playlists on multiple music platform with music posted into a discord text channel.",
+  "description": "A discord bot that creates playlists on multiple music platforms with music posted into a discord text channel.",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
