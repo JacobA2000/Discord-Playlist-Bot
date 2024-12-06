@@ -85,7 +85,7 @@ app.get('/spotifycallback', async (req, res) => {
 
     res.send(`Authenticated with spotify`);
     // Schedule the token refresh before the access token expires 
-    scheduleTokenRefresh();
+    scheduleTokenRefresh(s="spotify");
 
   } catch (error) {
     res.send(`Error: ${error.message}`);
@@ -136,37 +136,42 @@ app.get('/ytcallback', async (req, res) => {
 
     res.send(`Authenticated with youtube`);
     // Schedule the token refresh before the access token expires 
-    scheduleTokenRefresh();
+    scheduleTokenRefresh(s="yt");
 
   } catch (error) {
     res.send(`Error: ${error.message}`);
   }
 });
 
-function scheduleTokenRefresh() {
+function scheduleTokenRefresh(s) {
   // Schedule to refresh the token 5 minutes before it expires
   const interval = 55 * 60 * 1000; // 55 minutes in milliseconds
   setTimeout(async () => {
     
     console.log("Running scheduled token refresh.")
 
-    await fetchNewAccessToken(
-      service = 'spotify',
-      authUrl = 'https://accounts.spotify.com/api/token', 
-      refreshToken = spotifyRToken, 
-      clientId = spotifyClientId, 
-      clientSecret = spotifyClientSecret
-    );
-
-    await fetchNewAccessToken(
-      service = 'yt',
-      authUrl = 'https://oauth2.googleapis.com/token', 
-      refreshToken = ytRToken, 
-      clientId = ytClientId, 
-      clientSecret = ytClientSecret
-    );
-
-    scheduleTokenRefresh(); // Schedule the next refresh
+    switch(s) {
+      case "spotify":
+        await fetchNewAccessToken(
+          service = 'spotify',
+          authUrl = 'https://accounts.spotify.com/api/token', 
+          refreshToken = spotifyRToken, 
+          clientId = spotifyClientId, 
+          clientSecret = spotifyClientSecret
+        );
+        break;
+      case "yt":
+        await fetchNewAccessToken(
+          service = 'yt',
+          authUrl = 'https://oauth2.googleapis.com/token', 
+          refreshToken = ytRToken, 
+          clientId = ytClientId, 
+          clientSecret = ytClientSecret
+        );
+        break;
+    }
+    
+    scheduleTokenRefresh(s); // Schedule the next refresh
   }, interval);
 }
 
@@ -196,9 +201,11 @@ async function fetchNewAccessToken(service, authUrl, refreshToken, clientId, cli
       case "spotify":
         spotifyAccessToken = data.access_token;
         console.log(`New spotify access token received: ${spotifyAccessToken}`);
+        break;
       case "yt":
         ytAccessToken = data.access_token;
         console.log(`New yt access token received: ${ytAccessToken}`);
+        break;
     }
     
   } catch (error) {
