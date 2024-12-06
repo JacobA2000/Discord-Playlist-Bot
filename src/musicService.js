@@ -25,7 +25,7 @@ let spotifyRToken = spotifyRefreshToken;
 let ytAccessToken = "";
 let ytRToken = ytRefreshToken;
 
-if (spotifyAccessToken != ""){
+if (spotifyRToken != ""){
   fetchNewAccessToken(
     service = 'spotify',
     authUrl = 'https://accounts.spotify.com/api/token', 
