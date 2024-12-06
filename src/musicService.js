@@ -269,9 +269,38 @@ async function addVideoToYTPlaylist(video_id) {
   console.log('Video added to playlist:', data);
 }
 
+async function searchYTByISRC(ISRC) {
+  const url = `https://youtube.googleapis.com/youtube/v3/search?part=snippet`;
+  const body = {
+    snippet: {
+      q: ISRC,
+      topicId: '/m/04rlf', //Topic id for music
+      type: 'video'
+    }
+  };
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${ytAccessToken}`
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(`Error: ${error.error.message}`);
+  }
+
+  const data = await response.json();
+  console.log('Search returned:', data);
+}
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
 
 module.exports.addTrackToSpotifyPlaylist = addTrackToSpotifyPlaylist;
 module.exports.addVideoToYTPlaylist = addVideoToYTPlaylist;
+module.exports.searchYTByISRC = searchYTByISRC;

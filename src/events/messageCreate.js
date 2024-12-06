@@ -30,6 +30,7 @@ module.exports = {
                         musicService.addTrackToSpotifyPlaylist(track_uri);
 
                         //IMPLEMENT HANDLING FOR YT PLAYLIST
+                        musicService.searchYTByISRC("GX8LD2259974");
                 } 
                 else if (url.includes("music.youtube")) {
                         const urlParts = url.split('?');
