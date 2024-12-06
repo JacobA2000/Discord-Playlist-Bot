@@ -231,31 +231,35 @@ async function addTrackToSpotifyPlaylist(track_uri) {
     }
 }
 
-async function addVideoToYTPlaylist(video_id) { 
-  try { 
-    const accessToken = await oauth2Client.getAccessToken(); 
-    const response = await fetch('https://www.googleapis.com/youtube/v3/playlistItems', {
-      method: 'POST', 
-      headers: { 
-        Authorization: `Bearer ${accessToken.token}`, 
-       'Content-Type': 'application/json', 
-      }, 
-      body: JSON.stringify({ 
-        snippet: { 
-          playlistId: ytPlaylistId, 
-          resourceId: { 
-            kind: 'youtube#video', 
-            videoId: video_id, 
-          }, 
-        }, 
-      }), 
-    });
-    
-    const data = await response.json(); 
-    console.log('Video added to playlist:', data); 
-  } catch (error) { 
-    console.error('Error adding video to playlist:', error); 
-  } 
+async function addVideoToYTPlaylist(video_id) {
+  const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet`;
+
+  const body = {
+    snippet: {
+      playlistId: ytPlaylistId,
+      resourceId: {
+        kind: 'youtube#video',
+        videoId: video_id
+      }
+    }
+  };
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${ytAccessToken}`
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(`Error: ${error.error.message}`);
+  }
+
+  const data = await response.json();
+  console.log('Video added to playlist:', data);
 }
 
 app.listen(port, () => {
