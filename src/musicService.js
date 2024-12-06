@@ -25,21 +25,31 @@ let spotifyRToken = spotifyRefreshToken;
 let ytAccessToken = "";
 let ytRToken = ytRefreshToken;
 
-fetchNewAccessToken(
-  service = 'spotify',
-  authUrl = 'https://accounts.spotify.com/api/token', 
-  refreshToken = spotifyRToken, 
-  clientId = spotifyClientId, 
-  clientSecret = spotifyClientSecret
-);
+if (spotifyAccessToken != ""){
+  fetchNewAccessToken(
+    service = 'spotify',
+    authUrl = 'https://accounts.spotify.com/api/token', 
+    refreshToken = spotifyRToken, 
+    clientId = spotifyClientId, 
+    clientSecret = spotifyClientSecret
+  );
 
-fetchNewAccessToken(
-  service = 'yt',
-  authUrl = 'https://oauth2.googleapis.com/token', 
-  refreshToken = ytRToken, 
-  clientId = ytClientId, 
-  clientSecret = ytClientSecret
-);
+  scheduleTokenRefresh(s="spotify");
+}
+
+if (ytRToken != ""){
+  fetchNewAccessToken(
+    service = 'yt',
+    authUrl = 'https://oauth2.googleapis.com/token', 
+    refreshToken = ytRToken, 
+    clientId = ytClientId, 
+    clientSecret = ytClientSecret
+  );
+
+  scheduleTokenRefresh(s="yt");
+}
+
+
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
