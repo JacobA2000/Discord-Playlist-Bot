@@ -326,7 +326,7 @@ async function addVideoToYTPlaylist(video_id) {
     const error = await response.json();
     throw new Error(`Error: ${error.error.message}`);
   }
-  
+
   console.log('Video added to YT playlist');
 }
 
