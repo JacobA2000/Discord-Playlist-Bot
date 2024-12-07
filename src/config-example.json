@@ -1,0 +1,17 @@
+{
+  "token": "",
+  "clientId": "",
+  "devGuildId": "",
+  "musicChannelId": "",
+  "spotifyClientId": "",
+  "spotifyClientSecret": "",
+  "spotifyRedirectURI": "",
+  "spotifyPlaylistId": "",
+  "spotifyRefreshToken": "",
+  "ytClientId": "",
+  "ytClientSecret": "",
+  "ytRedirectURI": "",
+  "ytPlaylistId": "",
+  "ytRefreshToken": "",
+  "port": 3000
+}
