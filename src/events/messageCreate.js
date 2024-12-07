@@ -70,6 +70,6 @@ module.exports = {
                         }
                 };
                 
-                await message.channel.send("Test");
+                await message.react("🫡");
 	},
 };
