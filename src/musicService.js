@@ -223,6 +223,8 @@ async function fetchNewAccessToken(service, authUrl, refreshToken, clientId, cli
   }
 }
 
+//SPOTIFY
+
 async function addTrackToSpotifyPlaylist(track_uri) { 
     const url = `https://api.spotify.com/v1/playlists/${spotifyPlaylistId}/tracks`; 
     const bodyData = JSON.stringify({ 
@@ -247,6 +249,29 @@ async function addTrackToSpotifyPlaylist(track_uri) {
         console.log(`Error: ${error.message}`);
     }
 }
+
+async function getISRCFromSpotify(trackID) {
+  const url = `https://api.spotify.com/v1/tracks/${trackID}`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${spotifyAccessToken}`
+    }
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(`Error: ${error.error.message}`);
+  }
+
+  const data = await response.json();
+
+  console.log('ISRC Found:', data.external_ids.isrc);
+  return data.external_ids.isrc;
+}
+
+//YOUTUBE
 
 async function addVideoToYTPlaylist(video_id) {
   const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet`;
@@ -305,7 +330,9 @@ async function searchYTByISRC(ISRC) {
   }
 
   const data = await response.json();
-  console.log('Search returned:', data);
+
+  console.log('Search returned:', data.items[0].id.videoId);
+  return data.items[0].id.videoId;
 }
 
 app.listen(port, () => {
@@ -315,3 +342,4 @@ app.listen(port, () => {
 module.exports.addTrackToSpotifyPlaylist = addTrackToSpotifyPlaylist;
 module.exports.addVideoToYTPlaylist = addVideoToYTPlaylist;
 module.exports.searchYTByISRC = searchYTByISRC;
+module.exports.getISRCFromSpotify = getISRCFromSpotify;
