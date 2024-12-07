@@ -240,7 +240,7 @@ async function addTrackToSpotifyPlaylist(track_uri) {
             body: bodyData, 
         }); 
         if (response.status === 201) { 
-            console.log(`Track added to playlist successfully.`); 
+            console.log(`Track added to spotify playlist successfully.`); 
         } else { 
             const errorData = await response.json(); 
             console.log(`Error adding track to playlist: ${errorData.error.message}`); 
@@ -271,6 +271,33 @@ async function getISRCFromSpotify(trackID) {
   return data.external_ids.isrc;
 }
 
+async function searchSpotify(title, artist) {
+  const baseUrl = 'https://api.spotify.com/v1/search';
+  const params = new URLSearchParams({ 
+    q: `${title} ${artist}`, 
+    type: 'track',
+    limit: 1
+  });
+  const url = `${baseUrl}?${params.toString()}`
+
+  const response = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Bearer ${spotifyAccessToken}`
+    }
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(`Error: ${error.error.message}`);
+  }
+
+  const data = await response.json();
+
+  console.log('URI returned:', data.tracks.items[0].uri);
+  return data.tracks.items[0].uri;
+}
+
 //YOUTUBE
 
 async function addVideoToYTPlaylist(video_id) {
@@ -299,22 +326,19 @@ async function addVideoToYTPlaylist(video_id) {
     const error = await response.json();
     throw new Error(`Error: ${error.error.message}`);
   }
-
-  const data = await response.json();
-  console.log('Video added to playlist:', data);
+  
+  console.log('Video added to YT playlist');
 }
 
 async function searchYTByISRC(ISRC) {
   const baseUrl = `https://www.googleapis.com/youtube/v3/search`;
-  const body = {
-    snippet: {
-      q: ISRC,
-      topicId: '/m/04rlf', //Topic id for music
-      type: 'video'
-    }
-  };
-
-  const params = new URLSearchParams({ part: 'snippet', q: ISRC, topicId: '/m/04rlf', type: 'video', maxResults: 5 });
+  const params = new URLSearchParams({ 
+    part: 'snippet', 
+    q: ISRC, 
+    topicId: '/m/04rlf', 
+    type: 'video', 
+    maxResults: 5 
+  });
   const url = `${baseUrl}?${params.toString()}`
 
   const response = await fetch(url, {
@@ -335,11 +359,40 @@ async function searchYTByISRC(ISRC) {
   return data.items[0].id.videoId;
 }
 
+async function getYTVideoInfo(video_id) {
+  const baseUrl = `https://www.googleapis.com/youtube/v3/videos`;
+  const params = new URLSearchParams({ 
+    part: 'snippet', 
+    id: video_id
+  });
+  const url = `${baseUrl}?${params.toString()}`
+
+  const response = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Bearer ${ytAccessToken}`
+    }
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(`Error: ${error.error.message}`);
+  }
+
+  const data = await response.json();
+
+  console.log('Info returned:', data.items[0]);
+  return data.items[0];
+}
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
 
 module.exports.addTrackToSpotifyPlaylist = addTrackToSpotifyPlaylist;
+module.exports.getISRCFromSpotify = getISRCFromSpotify;
+module.exports.searchSpotify = searchSpotify;
+
 module.exports.addVideoToYTPlaylist = addVideoToYTPlaylist;
 module.exports.searchYTByISRC = searchYTByISRC;
-module.exports.getISRCFromSpotify = getISRCFromSpotify;
+module.exports.getYTVideoInfo = getYTVideoInfo;

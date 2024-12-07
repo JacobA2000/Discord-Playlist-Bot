@@ -54,8 +54,19 @@ module.exports = {
                                 await musicService.addVideoToYTPlaylist(video_id);
 
                                 //GET INFORMATION FROM YT
+                                ytVideoInfo = await musicService.getYTVideoInfo(video_id);
+                                title = ytVideoInfo.snippet.title;
+                                channelTitle = ytVideoInfo.snippet.channelTitle;
+                                if (channelTitle.includes(" - Topic")){
+                                        channelTitle = channelTitle.replace(" - Topic", "");
+                                }
+                                tags = ytVideoInfo.snippet.tags;
 
-                                //IMPLEMENT HANDLING FOR SPOTIFY PLAYLIST
+                                //SEARCH SPOTIFY FOR TRACK
+                                spotifyURI = await musicService.searchSpotify(title, channelTitle);
+
+                                //HANDLING FOR ADDING TO SPOTIFY PLAYLIST
+                                await musicService.addTrackToSpotifyPlaylist(spotifyURI);
                         }
                 };
                 
