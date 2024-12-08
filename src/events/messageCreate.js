@@ -1,5 +1,5 @@
 const { Events } = require('discord.js');
-const { clientId } = require('../config.json');
+const { clientId, clearThreshold } = require('../config.json');
 const musicService = require("../musicService")
 
 //const urlRegex = /\b((http|https):\/\/)?(www\.)?(open\.spotify\.com\/track\/[a-zA-Z0-9]+(\?[a-zA-Z0-9=&]*)?|music\.youtube\.com\/watch\?v=[a-zA-Z0-9_-]+(\&[a-zA-Z0-9=&]*)?|tidal\.com\/browse\/track\/[a-zA-Z0-9]+(\?[a-zA-Z0-9=&]*)?)\b/g;
@@ -25,6 +25,13 @@ module.exports = {
                 //urlsMatched.forEach(url => {
                 for (url of urlsMatched) {
                         if(url.includes("spotify")) {
+                                //CHECK PLAYLIST LENGTH IF ABOVE THRESHOLD CLEAR PLAYLISTS
+                                spotifyLen = await musicService.getSpotifyPlaylistLength();
+                                if (spotifyLen >= clearThreshold) {
+                                        await musicService.clearSpotifyPlaylist();
+                                        await musicService.clearYTPlaylist();
+                                }
+
                                 //HANDLING FOR ADDING TO SPOTIFY PLAYLIST
                                 const urlParts = url.split('/');
                                 track_id = urlParts[urlParts.length - 1];
@@ -36,9 +43,16 @@ module.exports = {
 
                                 //HANDLING FOR ADDING TO YT PLAYLIST
                                 ytId = await musicService.searchYTByISRC(isrc);
-                                await musicService.addVideoToYTPlaylist(ytId);
+                                await musicService.addVideoToYTPlaylist(ytId);      
                         } 
                         else if (url.includes("music.youtube")) {
+                                //CHECK PLAYLIST LENGTH IF ABOVE THRESHOLD CLEAR PLAYLISTS
+                                spotifyLen = await musicService.getSpotifyPlaylistLength();
+                                if (spotifyLen >= clearThreshold) {
+                                        await musicService.clearSpotifyPlaylist();
+                                        await musicService.clearYTPlaylist();
+                                }
+
                                 //HANDLING FOR ADDING TO YT PLAYLIST
                                 const urlParts = url.split('?');
                                 let video_id = "";

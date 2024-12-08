@@ -298,6 +298,40 @@ async function searchSpotify(title, artist) {
   return data.tracks.items[0].uri;
 }
 
+async function getSpotifyPlaylistLength() { 
+  
+  const response = await fetch(`https://api.spotify.com/v1/playlists/${spotifyPlaylistId}`, { 
+    headers: { 
+      'Authorization': `Bearer ${spotifyAccessToken}` 
+    } 
+  }); 
+
+  if (!response.ok) { 
+    throw new Error('Failed to fetch playlist'); 
+  } 
+  const data = await response.json(); 
+  
+  return data.tracks.total; 
+}
+
+async function clearSpotifyPlaylist() { 
+  const response = await fetch(`https://api.spotify.com/v1/playlists/${spotifyPlaylistId}/tracks`, { 
+    method: 'PUT', 
+    headers: { 
+      'Authorization': `Bearer ${spotifyAccessToken}`, 
+      'Content-Type': 'application/json' 
+    }, 
+    body: JSON.stringify({ 
+      uris: [] }) 
+    }
+  ); 
+  
+  if (!response.ok) { 
+    throw new Error('Failed to clear playlist'); 
+  } 
+  console.log('Spotify playlist cleared'); 
+}
+
 //YOUTUBE
 
 async function addVideoToYTPlaylist(video_id) {
@@ -385,6 +419,39 @@ async function getYTVideoInfo(video_id) {
   return data.items[0];
 }
 
+async function clearYTPlaylist() {
+  let nextPageToken = '';
+  do {
+    const response = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=id&playlistId=${ytPlaylistId}&maxResults=50&pageToken=${nextPageToken}`, {
+      headers: {
+        'Authorization': `Bearer ${ytAccessToken}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch playlist items');
+    }
+
+    const data = await response.json();
+    for (const item of data.items) {
+      const deleteResponse = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?id=${item.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${ytAccessToken}`
+        }
+      });
+
+      if (!deleteResponse.ok) {
+        throw new Error('Failed to delete playlist item');
+      }
+    }
+
+    nextPageToken = data.nextPageToken;
+  } while (nextPageToken);
+
+  console.log('YT playlist cleared');
+}
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
@@ -392,7 +459,10 @@ app.listen(port, () => {
 module.exports.addTrackToSpotifyPlaylist = addTrackToSpotifyPlaylist;
 module.exports.getISRCFromSpotify = getISRCFromSpotify;
 module.exports.searchSpotify = searchSpotify;
+module.exports.getSpotifyPlaylistLength = getSpotifyPlaylistLength;
+module.exports.clearSpotifyPlaylist = clearSpotifyPlaylist;
 
 module.exports.addVideoToYTPlaylist = addVideoToYTPlaylist;
 module.exports.searchYTByISRC = searchYTByISRC;
 module.exports.getYTVideoInfo = getYTVideoInfo;
+module.exports.clearYTPlaylist = clearYTPlaylist;

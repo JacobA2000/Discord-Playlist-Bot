@@ -13,5 +13,6 @@
   "ytRedirectURI": "",
   "ytPlaylistId": "",
   "ytRefreshToken": "",
-  "port": 3000
+  "port": 3000,
+  "clearThreshold": 30
 }
