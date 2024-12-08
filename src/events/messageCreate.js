@@ -71,9 +71,15 @@ module.exports = {
                                 ytVideoInfo = await musicService.getYTVideoInfo(video_id);
                                 title = ytVideoInfo.snippet.title;
                                 channelTitle = ytVideoInfo.snippet.channelTitle;
+
                                 if (channelTitle.includes(" - Topic")){
                                         channelTitle = channelTitle.replace(" - Topic", "");
                                 }
+
+                                if (channelTitle.toLowerCase() == 'release') {
+                                        channelTitle = "";
+                                }
+
                                 tags = ytVideoInfo.snippet.tags;
 
                                 //SEARCH SPOTIFY FOR TRACK
