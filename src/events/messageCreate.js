@@ -40,11 +40,11 @@ module.exports = {
                                 await musicService.addTrackToSpotifyPlaylist(track_uri);
 
                                 //GET TRACK ISRC FROM SPOTIFY
-                                //isrc = await musicService.getISRCFromSpotify(track_id);
+                                isrc = await musicService.getISRCFromSpotify(track_id);
 
                                 //HANDLING FOR ADDING TO YT PLAYLIST
-                                ytId = await songlink.getTrackIds(url=track_uri, platformToFind="yt")
-                                //ytId = await musicService.searchYTByISRC(isrc);
+                                //ytId = await songlink.getTrackIds(url=track_uri, platformToFind="yt")
+                                ytId = await musicService.searchYTByISRC(isrc);
                                 await musicService.addVideoToYTPlaylist(ytId);      
                         } 
                         else if (url.includes("music.youtube")) {
@@ -69,27 +69,32 @@ module.exports = {
                                 }
                                 await musicService.addVideoToYTPlaylist(video_id);
 
-                                // //GET INFORMATION FROM YT
-                                // ytVideoInfo = await musicService.getYTVideoInfo(video_id);
-                                // title = ytVideoInfo.snippet.title;
-                                // channelTitle = ytVideoInfo.snippet.channelTitle;
-
-                                // if (channelTitle.includes(" - Topic")){
-                                //         channelTitle = channelTitle.replace(" - Topic", "");
-                                // }
-
-                                // if (channelTitle.toLowerCase() == 'release') {
-                                //         channelTitle = "";
-                                // }
-
-                                // tags = ytVideoInfo.snippet.tags;
-
-                                // //SEARCH SPOTIFY FOR TRACK
-                                // spotifyURI = await musicService.searchSpotify(title, channelTitle);
-
                                 //HANDLING FOR ADDING TO SPOTIFY PLAYLIST
                                 spotifyId = await songlink.getTrackIds(url=track_uri, platformToFind="spotify")
-                                spotifyURI = `spotify:track:${spotifyId}`
+
+                                if (spotifyId == "Not found") {
+                                        //GET INFORMATION FROM YT
+                                        ytVideoInfo = await musicService.getYTVideoInfo(video_id);
+                                        title = ytVideoInfo.snippet.title;
+                                        channelTitle = ytVideoInfo.snippet.channelTitle;
+
+                                        if (channelTitle.includes(" - Topic")){
+                                                channelTitle = channelTitle.replace(" - Topic", "");
+                                        }
+
+                                        if (channelTitle.toLowerCase() == 'release') {
+                                                channelTitle = "";
+                                        }
+
+                                        tags = ytVideoInfo.snippet.tags;
+
+                                        //SEARCH SPOTIFY FOR TRACK
+                                        spotifyURI = await musicService.searchSpotify(title, channelTitle);
+                                }
+                                else {
+                                        spotifyURI = `spotify:track:${spotifyId}`
+                                }
+                                
                                 await musicService.addTrackToSpotifyPlaylist(spotifyURI);
                         }
                 };
