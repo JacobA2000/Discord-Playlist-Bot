@@ -1,6 +1,7 @@
 const { Events } = require('discord.js');
 const { clientId, clearThreshold } = require('../config.json');
 const musicService = require("../musicService")
+const songlink = require('../songlink')
 
 //const urlRegex = /\b((http|https):\/\/)?(www\.)?(open\.spotify\.com\/track\/[a-zA-Z0-9]+(\?[a-zA-Z0-9=&]*)?|music\.youtube\.com\/watch\?v=[a-zA-Z0-9_-]+(\&[a-zA-Z0-9=&]*)?|tidal\.com\/browse\/track\/[a-zA-Z0-9]+(\?[a-zA-Z0-9=&]*)?)\b/g;
 const urlRegex = /\b((http|https):\/\/)?(www\.)?(open\.spotify\.com\/track\/[a-zA-Z0-9]+(\?[a-zA-Z0-9=&]*)?|music\.youtube\.com\/watch\?v=[a-zA-Z0-9_-]+(\&[a-zA-Z0-9=&]*)?)\b/g;
@@ -39,10 +40,11 @@ module.exports = {
                                 await musicService.addTrackToSpotifyPlaylist(track_uri);
 
                                 //GET TRACK ISRC FROM SPOTIFY
-                                isrc = await musicService.getISRCFromSpotify(track_id);
+                                //isrc = await musicService.getISRCFromSpotify(track_id);
 
                                 //HANDLING FOR ADDING TO YT PLAYLIST
-                                ytId = await musicService.searchYTByISRC(isrc);
+                                ytId = await songlink.getTrackIds(url=track_uri, platformToFind="yt")
+                                //ytId = await musicService.searchYTByISRC(isrc);
                                 await musicService.addVideoToYTPlaylist(ytId);      
                         } 
                         else if (url.includes("music.youtube")) {
@@ -67,25 +69,27 @@ module.exports = {
                                 }
                                 await musicService.addVideoToYTPlaylist(video_id);
 
-                                //GET INFORMATION FROM YT
-                                ytVideoInfo = await musicService.getYTVideoInfo(video_id);
-                                title = ytVideoInfo.snippet.title;
-                                channelTitle = ytVideoInfo.snippet.channelTitle;
+                                // //GET INFORMATION FROM YT
+                                // ytVideoInfo = await musicService.getYTVideoInfo(video_id);
+                                // title = ytVideoInfo.snippet.title;
+                                // channelTitle = ytVideoInfo.snippet.channelTitle;
 
-                                if (channelTitle.includes(" - Topic")){
-                                        channelTitle = channelTitle.replace(" - Topic", "");
-                                }
+                                // if (channelTitle.includes(" - Topic")){
+                                //         channelTitle = channelTitle.replace(" - Topic", "");
+                                // }
 
-                                if (channelTitle.toLowerCase() == 'release') {
-                                        channelTitle = "";
-                                }
+                                // if (channelTitle.toLowerCase() == 'release') {
+                                //         channelTitle = "";
+                                // }
 
-                                tags = ytVideoInfo.snippet.tags;
+                                // tags = ytVideoInfo.snippet.tags;
 
-                                //SEARCH SPOTIFY FOR TRACK
-                                spotifyURI = await musicService.searchSpotify(title, channelTitle);
+                                // //SEARCH SPOTIFY FOR TRACK
+                                // spotifyURI = await musicService.searchSpotify(title, channelTitle);
 
                                 //HANDLING FOR ADDING TO SPOTIFY PLAYLIST
+                                spotifyId = await songlink.getTrackIds(url=track_uri, platformToFind="spotify")
+                                spotifyURI = `spotify:track:${spotifyId}`
                                 await musicService.addTrackToSpotifyPlaylist(spotifyURI);
                         }
                 };
