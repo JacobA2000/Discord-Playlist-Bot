@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-const getTrackIds = async (url, userCountry = 'US', songIfSingle = true, platformToFind) => {
+const getTrackIds = async (url, platformToFind, userCountry = 'US', songIfSingle = true) => {
   const apiUrl = `https://api.song.link/v1-alpha.1/links?url=${encodeURIComponent(url)}&userCountry=${userCountry}&songIfSingle=${songIfSingle}`;
 
   try {
