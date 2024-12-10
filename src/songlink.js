@@ -15,15 +15,16 @@ const getTrackIds = async (url, platformToFind, userCountry = 'US', songIfSingle
 
     console.log(`YouTube ID: ${youtubeId}`);
     console.log(`Spotify ID: ${spotifyId}`);
+
+    switch (platformToFind) {
+      case "spotify":
+          return spotifyId;
+      case "yt":
+          return youtubeId;
+    }
+
   } catch (error) {
     console.error('Error fetching data:', error);
-  }
-
-  switch (platformToFind) {
-    case "spotify":
-        return spotifyId;
-    case "yt":
-        return youtubeId;
   }
 };
 
