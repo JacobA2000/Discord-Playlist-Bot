@@ -25,6 +25,7 @@ const getTrackIds = async (url, platformToFind, userCountry = 'US', songIfSingle
 
   } catch (error) {
     console.error('Error fetching data:', error);
+    return 'Not found';
   }
 };
 
