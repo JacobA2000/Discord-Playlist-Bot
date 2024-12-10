@@ -74,7 +74,9 @@ module.exports = {
                                 await musicService.addVideoToYTPlaylist(video_id);
 
                                 //HANDLING FOR ADDING TO SPOTIFY PLAYLIST
-                                spotifyId = await songlink.getTrackIds(url=url, platformToFind="spotify")
+                                spotifyId = await songlink.getTrackIds(url=url, platformToFind="spotify");
+                                spotifyURI = `spotify:track:${spotifyId}`;
+                                console.log(spotifyURI);
 
                                 if (spotifyId == "Not found") {
                                         //GET INFORMATION FROM YT
@@ -94,9 +96,6 @@ module.exports = {
 
                                         //SEARCH SPOTIFY FOR TRACK
                                         spotifyURI = await musicService.searchSpotify(title, channelTitle);
-                                }
-                                else {
-                                        spotifyURI = `spotify:track:${spotifyId}`
                                 }
                                 
                                 await musicService.addTrackToSpotifyPlaylist(spotifyURI);
