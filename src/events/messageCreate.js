@@ -104,6 +104,6 @@ module.exports = {
                 };
                 
                 //await message.react("🫡");
-                await message.react("1151324248263110726");
+                await message.react("1316105281213693982");
 	},
 };
