@@ -47,7 +47,7 @@ module.exports = {
                                 isrc = await musicService.getISRCFromSpotify(track_id);
 
                                 //HANDLING FOR ADDING TO YT PLAYLIST
-                                //ytId = await songlink.getTrackIds(url=track_uri, platformToFind="yt")
+                                //ytId = await songlink.getTrackIds(url=url, platformToFind="yt")
                                 ytId = await musicService.searchYTByISRC(isrc);
                                 await musicService.addVideoToYTPlaylist(ytId);      
                         } 
@@ -74,7 +74,7 @@ module.exports = {
                                 await musicService.addVideoToYTPlaylist(video_id);
 
                                 //HANDLING FOR ADDING TO SPOTIFY PLAYLIST
-                                spotifyId = await songlink.getTrackIds(url=track_uri, platformToFind="spotify")
+                                spotifyId = await songlink.getTrackIds(url=url, platformToFind="spotify")
 
                                 if (spotifyId == "Not found") {
                                         //GET INFORMATION FROM YT
