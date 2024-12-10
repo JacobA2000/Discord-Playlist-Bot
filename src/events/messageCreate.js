@@ -36,11 +36,11 @@ module.exports = {
                                 //HANDLING FOR ADDING TO SPOTIFY PLAYLIST
                                 const urlParts = url.split('/');
                                 track_id = urlParts[urlParts.length - 1];
-                                track_uri = `spotify:track:${track_id}`;
                                 // Handle case where track_id contains extra parameters 
                                 if (track_id.includes('?')) { 
                                         track_id = track_id.split('?')[0];
                                 }
+                                track_uri = `spotify:track:${track_id}`;
                                 await musicService.addTrackToSpotifyPlaylist(track_uri);
 
                                 //GET TRACK ISRC FROM SPOTIFY
