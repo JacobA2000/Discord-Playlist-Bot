@@ -103,6 +103,7 @@ module.exports = {
                         }
                 };
                 
-                await message.react("🫡");
+                //await message.react("🫡");
+                await message.react("1151324248263110726");
 	},
 };
